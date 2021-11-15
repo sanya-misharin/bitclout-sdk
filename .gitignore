@@ -1,6 +1,8 @@
 # dependencies
 /node_modules
 /example/bitclout-sdk-example/node_modules
+yarn.lock
+package-lock.json
 
 # build
 /dist
