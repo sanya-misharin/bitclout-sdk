@@ -40,33 +40,23 @@ export class IdentityService {
   }
 
   launch(
-    path?: string
-    // params?: { publicKey?: string; tx?: string }
+    path?: string,
+    params?: { tx?: string }
   ): Promise<any> {
     let url = this.identityServiceURL as string;
     if (path) {
       url += path;
     }
 
-    // TODO: support params
+    let paramsStr = '';
 
-    // let httpParams = new HttpParams();
-    // if (this.isTestnet) {
-    //   httpParams = httpParams.append("testnet", "true");
-    // }
+    if (params?.tx) {
+      paramsStr += `tx=${params.tx}`;
+    }
 
-    // if (params?.publicKey) {
-    //   httpParams = httpParams.append("publicKey", params.publicKey);
-    // }
-
-    // if (params?.tx) {
-    //   httpParams = httpParams.append("tx", params.tx);
-    // }
-
-    // const paramsStr = httpParams.toString();
-    // if (paramsStr) {
-    //   url += `?${paramsStr}`;
-    // }
+    if (paramsStr.length > 0) {
+      url += encodeURI(`?${paramsStr}`);
+    }
 
     // center the window
     const h = 1000;
