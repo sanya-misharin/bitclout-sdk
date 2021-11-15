@@ -4,9 +4,6 @@
 yarn.lock
 package-lock.json
 
-# build
-/dist
-
 # testing
 /coverage
 
