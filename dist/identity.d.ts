@@ -33,5 +33,6 @@ export declare class IdentityService {
     private send;
     private postMessage;
     private respond;
+    private getMobileOperatingSystem;
 }
 export declare const identity: IdentityService;

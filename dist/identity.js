@@ -13,7 +13,7 @@ class IdentityService {
         // All outbound request promises we still need to resolve
         this.outboundRequests = {};
         // The URL of the identity service
-        this.identityServiceURL = "https://identity.bitclout.com/";
+        this.identityServiceURL = "https://identity.deso.org/";
         this.initialized = false;
         this.iframe = null;
         // Wait for storageGranted broadcast
@@ -45,7 +45,12 @@ class IdentityService {
         const w = 800;
         const y = window.outerHeight / 2 + window.screenY - h / 2;
         const x = window.outerWidth / 2 + window.screenX - w / 2;
-        this.identityWindow = window.open(url, undefined, `toolbar=no, width=${w}, height=${h}, top=${y}, left=${x}`);
+        let attributes = undefined;
+        let t = this.getMobileOperatingSystem();
+        if (t == 'iOS') {
+            attributes = '_blank';
+        }
+        this.identityWindow = window.open(url, attributes, `toolbar=no, width=${w}, height=${h}, top=${y}, left=${x}`);
         const promise = new Promise((res, rej) => {
             this.identityWindowResolve = res;
         });
@@ -142,6 +147,21 @@ class IdentityService {
     // Respond to a received message
     respond(window, id, payload) {
         window.postMessage({ id, service: "identity", payload }, "*");
+    }
+    getMobileOperatingSystem() {
+        const userAgent = navigator.userAgent || navigator.vendor || window['opera'];
+        // Windows Phone must come first because its UA also contains "Android"
+        if (/windows phone/i.test(userAgent)) {
+            return "Windows Phone";
+        }
+        if (/android/i.test(userAgent)) {
+            return "Android";
+        }
+        // iOS detection from: http://stackoverflow.com/a/9039885/177710
+        if (/iPad|iPhone|iPod/.test(userAgent) && !window['MSStream']) {
+            return "iOS";
+        }
+        return "unknown";
     }
 }
 exports.IdentityService = IdentityService;

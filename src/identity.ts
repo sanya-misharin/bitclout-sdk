@@ -17,7 +17,7 @@ export class IdentityService {
   private identityWindowResolve: any;
 
   // The URL of the identity service
-  identityServiceURL = "https://identity.bitclout.com/";
+  identityServiceURL = "https://identity.deso.org/";
 
   private initialized = false;
   private iframe: any = null;
@@ -63,10 +63,17 @@ export class IdentityService {
     const w = 800;
     const y = window.outerHeight / 2 + window.screenY - h / 2;
     const x = window.outerWidth / 2 + window.screenX - w / 2;
+    let attributes = undefined;
+
+    let t = this.getMobileOperatingSystem();
+
+    if (t == 'iOS') {
+      attributes = '_blank';
+    }
 
     this.identityWindow = window.open(
       url,
-      undefined,
+      attributes,
       `toolbar=no, width=${w}, height=${h}, top=${y}, left=${x}`
     );
 
@@ -191,6 +198,26 @@ export class IdentityService {
   // Respond to a received message
   private respond(window: Window, id: string, payload: any): void {
     window.postMessage({ id, service: "identity", payload }, "*");
+  }
+
+  private getMobileOperatingSystem() {
+    const userAgent = navigator.userAgent || navigator.vendor || window['opera'];
+
+    // Windows Phone must come first because its UA also contains "Android"
+    if (/windows phone/i.test(userAgent)) {
+      return "Windows Phone";
+    }
+
+    if (/android/i.test(userAgent)) {
+      return "Android";
+    }
+
+    // iOS detection from: http://stackoverflow.com/a/9039885/177710
+    if (/iPad|iPhone|iPod/.test(userAgent) && !window['MSStream']) {
+      return "iOS";
+    }
+
+    return "unknown";
   }
 }
 
